@@ -1,0 +1,66 @@
+{% extends 'economia/base.html' %}
+{% block content %}
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>🎯 Metas de Ahorro</h2>
+    <a href="{% url 'meta_nueva' %}" class="btn btn-success">➕ Nueva Meta</a>
+  </div>
+
+  {% if metas %}
+    <table class="table table-hover shadow-sm">
+      <thead class="table-light">
+        <tr>
+          <th>Nombre</th>
+          <th>Monto Objetivo</th>
+          <th>Monto Actual</th>
+          <th>Progreso</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for meta in metas %}
+          <tr>
+            <td>{{ meta.nombre_meta }}</td>
+            <td>Bs. {{ meta.monto_objetivo }}</td>
+            <td>Bs. {{ meta.monto_actual }}</td>
+            <td>
+              <div class="progress" style="height: 20px;">
+                <div class="progress-bar {% if meta.progreso >= 100 %}bg-success{% else %}bg-info{% endif %}"
+                     role="progressbar"
+                     style="width: {{ meta.progreso }}%"
+                     aria-valuenow="{{ meta.progreso }}"
+                     aria-valuemin="0"
+                     aria-valuemax="100">
+                  {{ meta.progreso|floatformat:1 }}%
+                </div>
+              </div>
+            </td>
+            <td>
+              {% if meta.estado == 'cumplida' %}
+                <span class="badge bg-success">Cumplida</span>
+              {% elif meta.estado == 'vencida' %}
+                <span class="badge bg-danger">Vencida</span>
+              {% else %}
+                <span class="badge bg-warning text-dark">En progreso</span>
+              {% endif %}
+            </td>
+            <td>
+              <a href="{% url 'meta_editar' meta.pk %}" class="btn btn-sm btn-primary">Editar</a>
+              <a href="{% url 'meta_eliminar' meta.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    
+        <hr>
+        <div class="text-center">
+          <a href="{% url 'dashboard' %}" class="btn btn-secondary px-4">↩ Volver</a>
+        </div>
+        
+  {% else %}
+    <p class="text-muted text-center mt-4">No hay metas registradas aún.</p>
+  {% endif %}
+</div>
+{% endblock %}

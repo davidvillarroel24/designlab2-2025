@@ -1,0 +1,33 @@
+{% extends 'economia/base.html' %}
+{% block content %}
+<div class="container mt-4">
+  <div class="card shadow-sm">
+    <div class="card-header bg-primary text-white">
+      <h4 class="mb-0">
+        {% if form.instance.pk %}✏️ Editar Meta{% else %}➕ Nueva Meta{% endif %}
+      </h4>
+    </div>
+    <div class="card-body">
+      <form method="post" novalidate>
+        {% csrf_token %}
+        {{ form.as_p }}
+        
+        {% if form.errors %}
+            <div class="alert alert-warning mt-3">
+            {% for field, errors in form.errors.items %}
+                {% for error in errors %}
+                ⚠️ {{ error }}<br>
+                {% endfor %}
+            {% endfor %}
+            </div>
+        {% endif %}
+        
+        <button type="submit" class="btn btn-success">
+          {% if form.instance.pk %}Actualizar{% else %}Guardar{% endif %}
+        </button>
+        <a href="{% url 'metas_lista' %}" class="btn btn-secondary">Cancelar</a>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

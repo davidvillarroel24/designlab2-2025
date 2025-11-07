@@ -1,0 +1,121 @@
+{% extends 'economia/base.html' %}
+{% block content %}
+<div class="container mt-4">
+  <h3>📊 Reportes generados</h3>
+  <a href="{% url 'reporte_generar' %}" class="btn btn-primary mb-3">Generar nuevo reporte</a>
+
+  <table class="table table-striped align-middle">
+    <thead class="table-primary">
+      <tr>
+        <th>Tipo</th>
+        <th>Fecha</th>
+        <th>Resumen</th>
+        <th>Detalles</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in reportes %}
+      <tr>
+        <td>{{ r.get_tipo_reporte_display }}</td>
+        <td>{{ r.fecha_generacion|date:"d/m/Y H:i" }}</td>
+
+        <!-- Resumen -->
+        <td>
+          <strong>Mes:</strong> {{ r.contenido_json.mes }}<br>
+          💰 Ingresos: <strong>Bs {{ r.contenido_json.resumen.total_ingresos|floatformat:2 }}</strong><br>
+          💸 Gastos: <strong>Bs {{ r.contenido_json.resumen.total_gastos|floatformat:2 }}</strong><br>
+          🧾 Balance: 
+          {% if r.contenido_json.resumen.saldo_neto >= 0 %}
+            <span class="text-success">Bs {{ r.contenido_json.resumen.saldo_neto|floatformat:2 }}</span>
+          {% else %}
+            <span class="text-danger">Bs {{ r.contenido_json.resumen.saldo_neto|floatformat:2 }}</span>
+          {% endif %}
+        </td>
+
+        <!-- Detalles desplegables -->
+        <td>
+          <button class="btn btn-sm btn-outline-info" type="button" data-bs-toggle="collapse" data-bs-target="#detalle{{ r.id }}">
+            Ver Detalles
+          </button>
+
+          <div class="collapse mt-2" id="detalle{{ r.id }}">
+            <!-- INGRESOS -->
+            <div class="mb-2">
+              <h6>🟢 Ingresos</h6>
+              {% if r.contenido_json.detalle_ingresos %}
+              <ul class="list-group list-group-flush small">
+                {% for i in r.contenido_json.detalle_ingresos %}
+                <li class="list-group-item d-flex justify-content-between">
+                  <span>{{ i.fecha }} — {{ i.descripcion }}</span>
+                  <span class="text-success">+Bs {{ i.monto|floatformat:2 }}</span>
+                </li>
+                {% endfor %}
+              </ul>
+              {% else %}
+              <p class="text-muted small">Sin ingresos registrados.</p>
+              {% endif %}
+            </div>
+
+            <!-- GASTOS -->
+            <div class="mb-2">
+              <h6>🔴 Gastos</h6>
+              {% if r.contenido_json.detalle_gastos %}
+              <ul class="list-group list-group-flush small">
+                {% for g in r.contenido_json.detalle_gastos %}
+                <li class="list-group-item d-flex justify-content-between">
+                  <span>{{ g.fecha }} — {{ g.descripcion }}</span>
+                  <span class="text-danger">-Bs {{ g.monto|floatformat:2 }}</span>
+                </li>
+                {% endfor %}
+              </ul>
+              {% else %}
+              <p class="text-muted small">Sin gastos registrados.</p>
+              {% endif %}
+            </div>
+
+            <!-- METAS DE AHORRO -->
+            <div>
+              <h6>🎯 Metas de Ahorro</h6>
+              {% if r.contenido_json.metas_ahorro %}
+              <ul class="list-group list-group-flush small">
+                {% for m in r.contenido_json.metas_ahorro %}
+                <li class="list-group-item">
+                  <strong>{{ m.nombre_meta }}</strong> ({{ m.estado }})<br>
+                  Objetivo: Bs {{ m.monto_objetivo|floatformat:2 }}<br>
+                  Actual: Bs {{ m.monto_actual|floatformat:2 }}<br>
+                  Progreso: {{ m.progreso }}%<br>
+                  Límite: {{ m.fecha_limite }}
+                </li>
+                {% endfor %}
+              </ul>
+              {% else %}
+              <p class="text-muted small">No hay metas registradas.</p>
+              {% endif %}
+            </div>
+          </div>
+        </td>
+
+        <!-- Acciones -->
+        <td>
+            
+            <a href="{% url 'reporte_pdf' r.id %}" class="btn btn-sm btn-outline-danger">
+                <i class="bi bi-file-earmark-pdf"></i> PDF
+            </a>
+          <a href="{% url 'reporte_eliminar' r.id %}" class="btn btn-danger btn-sm"
+             onclick="return confirm('¿Seguro que deseas eliminar este reporte?');">🗑️</a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="5" class="text-center text-muted">No hay reportes aún.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  
+        <hr>
+        <div class="text-center">
+          <a href="{% url 'dashboard' %}" class="btn btn-secondary px-4">↩ Volver</a>
+        </div>
+
+</div>
+{% endblock %}

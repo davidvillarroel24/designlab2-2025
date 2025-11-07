@@ -1,0 +1,29 @@
+{% extends "economia/base.html" %}
+
+{% block title %}Eliminar Ingreso{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="card shadow-sm border-0">
+    <div class="card-header bg-danger text-white fw-bold">
+      ⚠️ Confirmar eliminación
+    </div>
+    <div class="card-body text-center">
+      <p class="fs-5">
+        ¿Estás seguro de que deseas eliminar el ingreso de <strong>Bs. {{ object.monto }}</strong>
+        del día <strong>{{ object.fecha|date:"d/m/Y" }}</strong>?
+      </p>
+
+      <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger me-2">
+          <i class="bi bi-trash"></i> Sí, eliminar
+        </button>
+        <a href="{% url 'ingresos_lista' %}" class="btn btn-secondary">
+          Cancelar
+        </a>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

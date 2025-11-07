@@ -1,0 +1,65 @@
+{% extends "economia/base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}Registrar Ingreso{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-7">
+    <div class="card shadow-sm border-0">
+      <div class="card-header bg-success text-white text-center">
+        <h5 class="mb-0">
+          {% if form.instance.pk %}
+            ✏️ Editar Ingreso
+          {% else %}
+            💰 Registrar Nuevo Ingreso
+          {% endif %}
+        </h5>
+      </div>
+      <div class="card-body p-4">
+
+        <form method="post" novalidate>
+          {% csrf_token %}
+
+          <div class="mb-3">
+            <label for="id_monto" class="form-label">Monto</label>
+            {{ form.monto|add_class:"form-control" }}
+          </div>
+
+          <div class="mb-3">
+            <label for="id_fuente" class="form-label">Fuente</label>
+            {{ form.fuente|add_class:"form-control" }}
+          </div>
+
+          <div class="mb-3">
+            <label for="id_fecha" class="form-label">Fecha</label>
+            {{ form.fecha|add_class:"form-control" }}
+          </div>
+
+          <div class="mb-3">
+            <label for="id_descripcion" class="form-label">Descripción</label>
+            {{ form.descripcion|add_class:"form-control" }}
+          </div>
+
+          <div class="d-grid">
+            <button type="submit" class="btn btn-success">
+              {% if form.instance.pk %}
+                💾 Guardar Cambios
+              {% else %}
+                ➕ Registrar Ingreso
+              {% endif %}
+            </button>
+          </div>
+        </form>
+
+        <hr>
+        <div class="text-center">
+          <a href="{% url 'dashboard' %}" class="btn btn-secondary px-4">↩ Volver</a>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

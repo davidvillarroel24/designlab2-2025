@@ -1,0 +1,35 @@
+{% extends 'economia/base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container mt-5">
+    <div class="card shadow-lg border-0">
+        <div class="card-header bg-primary text-white text-center">
+            <h4 class="mb-0">🏷️ Nueva Categoría</h4>
+        </div>
+
+        <div class="card-body">
+            <form method="post" novalidate>
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <label for="id_nombre" class="form-label">Nombre de la categoría</label>
+                    {{ form.nombre }}
+                </div>
+
+                <div class="mb-3">
+                    <label for="id_tipo" class="form-label">Tipo</label>
+                    {{ form.tipo }}
+                    <div class="form-text">Selecciona si es para ingresos o gastos.</div>
+                </div>
+
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-success px-4">💾 Guardar categoría</button>
+                    <a href="{% url 'dashboard' %}" class="btn btn-secondary px-4">↩ Volver</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

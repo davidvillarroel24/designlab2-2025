@@ -1,0 +1,86 @@
+{% extends "economia/base.html" %}
+{% load static %}
+
+{% block title %}Lista de Gastos{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold text-dark">💳 Registro de Gastos</h2>
+    <a href="{% url 'gasto_nuevo' %}" class="btn btn-danger">
+      <i class="bi bi-plus-circle"></i> Nuevo Gasto
+    </a>
+  </div>
+
+  <!-- Tabla de gastos -->
+  <div class="card shadow-sm border-0">
+    <div class="card-header bg-light fw-bold">📋 Historial de Gastos</div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table id="tablaGastos" class="table table-hover align-middle">
+          <thead class="table-dark text-white">
+            <tr>
+              <th>Fecha</th>
+              <th>Categoría</th>
+              <th>Descripción</th>
+              <th>Tipo de Pago</th>
+              <th class="text-end">Monto (Bs.)</th>
+              <th class="text-center">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for gasto in gastos %}
+              <tr>
+                <td>{{ gasto.fecha|date:"d/m/Y" }}</td>
+                <td>{{ gasto.categoria.nombre }}</td>
+                <td>{{ gasto.descripcion }}</td>
+                <td>{{ gasto.tipo_pago }}</td>
+                <td class="text-end text-danger fw-bold">- {{ gasto.monto }}</td>
+                <td class="text-center">
+                  <a href="{% url 'gasto_editar' gasto.id %}" class="btn btn-sm btn-outline-primary">
+                    <i class="bi bi-pencil-square"></i>
+                  </a>
+                  <a href="{% url 'gasto_eliminar' gasto.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('¿Seguro que deseas eliminar este gasto?')">
+                    <i class="bi bi-trash"></i>
+                  </a>
+                </td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="6" class="text-center text-muted py-3">
+                  No hay gastos registrados.
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        
+        <hr>
+        <div class="text-center">
+          <a href="{% url 'dashboard' %}" class="btn btn-secondary px-4">↩ Volver</a>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- DataTables (opcional) -->
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+
+<script>
+  $(document).ready(function() {
+    $('#tablaGastos').DataTable({
+      language: {
+        url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
+      },
+      pageLength: 10,
+      order: [[0, 'desc']]
+    });
+  });
+</script>
+{% endblock %}

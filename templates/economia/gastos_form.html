@@ -1,0 +1,51 @@
+{% extends 'economia/base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container mt-5">
+    <div class="card shadow-lg border-0">
+        <div class="card-header bg-dark text-white text-center">
+            <h4 class="mb-0">💸 Registrar nuevo gasto</h4>
+        </div>
+
+        <div class="card-body">
+            <form method="post" novalidate>
+                {% csrf_token %}
+                
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="id_categoria" class="form-label">Categoría</label>
+                        {{ form.categoria }}
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="id_monto" class="form-label">Monto</label>
+                        {{ form.monto }}
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="id_fecha" class="form-label">Fecha</label>
+                        {{ form.fecha }}
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="id_tipo_pago" class="form-label">Tipo de pago</label>
+                        {{ form.tipo_pago }}
+                    </div>
+
+                    <div class="col-12">
+                        <label for="id_descripcion" class="form-label">Descripción</label>
+                        {{ form.descripcion }}
+                    </div>
+                </div>
+
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-success px-4">💾 Guardar gasto</button>
+                    <a href="{% url 'dashboard' %}" class="btn btn-secondary px-4">↩ Volver</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
