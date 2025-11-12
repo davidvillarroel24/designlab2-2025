@@ -1,0 +1,84 @@
+{% extends "economia/base.html" %}
+{% load static %}
+
+{% block title %}Lista de Ingresos{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold text-dark">💰 Registro de Ingresos</h2>
+    <a href="{% url 'ingreso_nuevo' %}" class="btn btn-success">
+      <i class="bi bi-plus-circle"></i> Nuevo Ingreso
+    </a>
+  </div>
+
+  <!-- Tabla de ingresos -->
+  <div class="card shadow-sm border-0">
+    <div class="card-header bg-light fw-bold">📋 Historial de Ingresos</div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table id="tablaIngresos" class="table table-hover align-middle">
+          <thead class="table-success text-white">
+            <tr>
+              <th>Fecha</th>
+              <th>Fuente</th>
+              <th>Descripción</th>
+              <th class="text-end">Monto (Bs.)</th>
+              <th class="text-center">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for ingreso in ingresos %}
+              <tr>
+                <td>{{ ingreso.fecha|date:"d/m/Y" }}</td>
+                <td>{{ ingreso.fuente.nombre }}</td>
+                <td>{{ ingreso.descripcion }}</td>
+                <td class="text-end text-success fw-bold">+ {{ ingreso.monto }}</td>
+                <td class="text-center">
+                  <a href="{% url 'ingreso_editar' ingreso.id %}" class="btn btn-sm btn-outline-primary">
+                    <i class="bi bi-pencil-square"></i>
+                  </a>
+                  <a href="{% url 'ingreso_eliminar' ingreso.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('¿Seguro que deseas eliminar este ingreso?')">
+                    <i class="bi bi-trash"></i>
+                  </a>
+                </td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="5" class="text-center text-muted py-3">
+                  No hay ingresos registrados.
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        
+        <hr>
+        <div class="text-center">
+          <a href="{% url 'dashboard' %}" class="btn btn-secondary px-4">↩ Volver</a>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- DataTables -->
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+
+<script>
+  $(document).ready(function() {
+    $('#tablaIngresos').DataTable({
+      language: {
+        url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
+      },
+      pageLength: 10,
+      order: [[0, 'desc']]
+    });
+  });
+</script>
+{% endblock %}
