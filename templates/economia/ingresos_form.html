@@ -67,21 +67,33 @@ document.addEventListener("DOMContentLoaded", function() {
           <div class="mb-3">
             <label for="id_monto" class="form-label">Monto</label>
             {{ form.monto|add_class:"form-control" }}
+            {% if form.monto.errors %}
+              <div class="text-danger small">{{ form.monto.errors|striptags }}</div>
+            {% endif %}
           </div>
 
           <div class="mb-3">
-            <label for="id_fuente" class="form-label">Categoria</label>
+            <label for="id_fuente" class="form-label">Categoría</label>
             {{ form.fuente|add_class:"form-control" }}
+            {% if form.fuente.errors %}
+              <div class="text-danger small">{{ form.fuente.errors|striptags }}</div>
+            {% endif %}
           </div>
 
           <div class="mb-3">
             <label for="id_fecha" class="form-label">Fecha</label>
             {{ form.fecha|add_class:"form-control" }}
+            {% if form.fecha.errors %}
+              <div class="text-danger small">{{ form.fecha.errors|striptags }}</div>
+            {% endif %}
           </div>
 
           <div class="mb-3">
             <label for="id_descripcion" class="form-label">Descripción</label>
             {{ form.descripcion|add_class:"form-control" }}
+            {% if form.descripcion.errors %}
+              <div class="text-danger small">{{ form.descripcion.errors|striptags }}</div>
+            {% endif %}
           </div>
 
           <div class="d-grid">
@@ -93,7 +105,9 @@ document.addEventListener("DOMContentLoaded", function() {
               {% endif %}
             </button>
           </div>
+
         </form>
+
 
         <hr>
         <div class="text-center">

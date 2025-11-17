@@ -55,37 +55,56 @@ document.addEventListener("DOMContentLoaded", function() {
                 {% csrf_token %}
                 
                 <div class="row g-3">
+
                     <div class="col-md-6">
                         <label for="id_categoria" class="form-label">Categoría</label>
                         {{ form.categoria }}
+                        {% if form.categoria.errors %}
+                            <div class="text-danger small">{{ form.categoria.errors|striptags }}</div>
+                        {% endif %}
                     </div>
 
                     <div class="col-md-6">
                         <label for="id_monto" class="form-label">Monto</label>
                         {{ form.monto }}
+                        {% if form.monto.errors %}
+                            <div class="text-danger small">{{ form.monto.errors|striptags }}</div>
+                        {% endif %}
                     </div>
 
                     <div class="col-md-6">
                         <label for="id_fecha" class="form-label">Fecha</label>
                         {{ form.fecha }}
+                        {% if form.fecha.errors %}
+                            <div class="text-danger small">{{ form.fecha.errors|striptags }}</div>
+                        {% endif %}
                     </div>
 
                     <div class="col-md-6">
                         <label for="id_tipo_pago" class="form-label">Tipo de pago</label>
                         {{ form.tipo_pago }}
+                        {% if form.tipo_pago.errors %}
+                            <div class="text-danger small">{{ form.tipo_pago.errors|striptags }}</div>
+                        {% endif %}
                     </div>
 
                     <div class="col-12">
                         <label for="id_descripcion" class="form-label">Descripción</label>
                         {{ form.descripcion }}
+                        {% if form.descripcion.errors %}
+                            <div class="text-danger small">{{ form.descripcion.errors|striptags }}</div>
+                        {% endif %}
                     </div>
+
                 </div>
 
                 <div class="text-center mt-4">
                     <button type="submit" class="btn btn-success px-4">💾 Guardar gasto</button>
                     <a href="{% url 'dashboard' %}" class="btn btn-secondary px-4">↩ Volver</a>
                 </div>
+
             </form>
+
         </div>
     </div>
 </div>
