@@ -47,7 +47,11 @@
             </td>
             <td>
               <a href="{% url 'meta_editar' meta.pk %}" class="btn btn-sm btn-primary">Editar</a>
-              <a href="{% url 'meta_eliminar' meta.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
+              <button class="btn btn-sm btn-danger btnEliminarMeta"
+                data-url="{% url 'meta_eliminar' meta.pk %}">
+                Eliminar
+              </button>
+
             </td>
           </tr>
         {% endfor %}
@@ -63,4 +67,37 @@
     <p class="text-muted text-center mt-4">No hay metas registradas aún.</p>
   {% endif %}
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    document.querySelectorAll(".btnEliminarMeta").forEach(btn => {
+        btn.addEventListener("click", function (e) {
+            e.preventDefault();
+
+            const url = this.dataset.url;
+
+            Swal.fire({
+                title: "¿Eliminar meta?",
+                text: "Esta acción no se puede deshacer.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Sí, eliminar",
+                cancelButtonText: "Cancelar"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = url;
+                }
+            });
+        });
+    });
+
+});
+</script>
+
+
 {% endblock %}

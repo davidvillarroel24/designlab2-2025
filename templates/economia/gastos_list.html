@@ -41,9 +41,10 @@
                   <a href="{% url 'gasto_editar' gasto.id %}" class="btn btn-sm btn-outline-primary">
                     <i class="bi bi-pencil-square"></i>
                   </a>
-                  <a href="{% url 'gasto_eliminar' gasto.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('¿Seguro que deseas eliminar este gasto?')">
+                  <button class="btn btn-sm btn-outline-danger btnEliminarGasto"
+                    data-url="{% url 'gasto_eliminar' gasto.id %}">
                     <i class="bi bi-trash"></i>
-                  </a>
+                  </button>
                 </td>
               </tr>
             {% empty %}
@@ -83,4 +84,36 @@
     });
   });
 </script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+
+    document.querySelectorAll(".btnEliminarGasto").forEach(btn => {
+        btn.addEventListener("click", function(e) {
+            e.preventDefault();
+
+            const url = this.dataset.url;
+
+            Swal.fire({
+                title: "¿Eliminar gasto?",
+                text: "Esta acción no se puede deshacer.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Sí, eliminar",
+                cancelButtonText: "Cancelar"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = url;
+                }
+            });
+        });
+    });
+
+});
+</script>
+
 {% endblock %}

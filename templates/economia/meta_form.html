@@ -1,5 +1,24 @@
 {% extends 'economia/base.html' %}
 {% block content %}
+
+
+{% if messages %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    {% for message in messages %}
+        Swal.fire({
+            title: "Éxito",
+            text: "{{ message }}",
+            icon: "success",
+            confirmButtonText: "OK",
+            confirmButtonColor: "#28a745"
+        });
+    {% endfor %}
+</script>
+{% endif %}
+
+
 <div class="container mt-4">
   <div class="card shadow-sm">
     <div class="card-header bg-primary text-white">

@@ -27,7 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-LOGIN_REDIRECT_URL = 'ingreso_nuevo'      # nombre de la vista a la que quieres redirigir
+LOGIN_REDIRECT_URL = 'dashboard'      # nombre de la vista a la que quieres redirigir
 LOGOUT_REDIRECT_URL = 'login'      # opcional: a dónde ir tras cerrar sesión
 
 # Application definition
@@ -110,7 +110,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/La_Paz'
 
 USE_I18N = True
 

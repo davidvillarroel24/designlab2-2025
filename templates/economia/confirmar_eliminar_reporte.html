@@ -4,8 +4,7 @@
   <div class="card shadow-sm border-0">
     <div class="card-body">
       <h4>⚠️ Confirmar eliminación</h4>
-      <p> ¿Estás seguro de que deseas eliminar el egreso de <strong>Bs. {{ object.monto }}</strong>
-        del día <strong>{{ object.fecha|date:"d/m/Y" }}</strong>?</p>
+      <p> ¿Estás seguro de que deseas eliminar el Reporte?</p>
       <form method="post">
         {% csrf_token %}
         <button type="submit" class="btn btn-danger">Sí, eliminar</button>

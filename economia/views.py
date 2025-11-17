@@ -10,11 +10,13 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import CreateView, UpdateView, ListView
 from .models import Ingreso
 from .forms import IngresoForm , MetaAhorroForm
+from django.contrib import messages
 
 class IngresoCreateView(LoginRequiredMixin, CreateView):
 #class IngresoCreateView( CreateView):
     model = Ingreso
     form_class = IngresoForm
+    
     template_name = 'economia/ingresos_form.html'
     success_url = reverse_lazy('ingreso_nuevo')
 
@@ -24,8 +26,14 @@ class IngresoCreateView(LoginRequiredMixin, CreateView):
         kwargs['usuario'] = self.request.user  # 👈 pasamos el usuario al formulario
         return kwargs
     
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["categorias"] = Categoria.objects.filter(usuario=self.request.user)
+        return context
+
     def form_valid(self, form):
         form.instance.usuario = self.request.user
+        messages.success(self.request, "Ingreso registrado correctamente 🎉")
         return super().form_valid(form)
 
 class IngresoUpdateView(LoginRequiredMixin, UpdateView):
@@ -170,15 +178,22 @@ class GastoCreateView(LoginRequiredMixin, CreateView):
     model = Gasto
     form_class = GastoForm
     template_name = 'economia/gastos_form.html'
-    success_url = reverse_lazy('gastos_lista')
+    success_url = reverse_lazy('gasto_nuevo')
 
     def get_form_kwargs(self):
             kwargs = super().get_form_kwargs()
             kwargs['usuario'] = self.request.user  # 👈 Pasamos el usuario al formulario
             return kwargs
 
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["categorias"] = Categoria.objects.filter(usuario=self.request.user)
+        return context
+    
     def form_valid(self, form):
-        form.instance.usuario = self.request.user
+        form.instance.usuario = self.request.user        
+        messages.success(self.request, "Gasto registrado correctamente 🎉")
         return super().form_valid(form)
 
 class GastoUpdateView(LoginRequiredMixin, UpdateView):
@@ -189,7 +204,7 @@ class GastoUpdateView(LoginRequiredMixin, UpdateView):
 
 class GastoDeleteView(LoginRequiredMixin, DeleteView):
     model = Gasto
-    template_name = 'economia/confirm_delete.html'
+    template_name = 'economia/confirmar_eliminar.html'
     success_url = reverse_lazy('gastos_lista')
 
 
@@ -271,7 +286,7 @@ class MetaAhorroCreateView(LoginRequiredMixin, CreateView):
     model = MetaAhorro
     form_class = MetaAhorroForm
     template_name = 'economia/meta_form.html'
-    success_url = reverse_lazy('metas_lista')
+    success_url = reverse_lazy('meta_nueva')
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -280,6 +295,7 @@ class MetaAhorroCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.usuario = self.request.user
+        messages.success(self.request, "Meta registrada correctamente 🎉")
         return super().form_valid(form)
 
 
@@ -333,7 +349,7 @@ def reportes_lista(request):
 
 class ReporteEliminarView(LoginRequiredMixin, DeleteView):
     model = Reporte
-    template_name = 'economia/confirmar_eliminar.html'
+    template_name = 'economia/confirmar_eliminar_reporte.html'
     success_url = reverse_lazy('reportes_lista')
 
     def get_queryset(self):
