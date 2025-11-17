@@ -427,28 +427,161 @@ def reporte_pdf(request, reporte_id):
     p.save()
     return response
 
+
+#mport os,json
+#mport requests
+#rom django.conf import settings
+#rom django.shortcuts import render
 #
-#    # Convertir Decimals a string
-#    def normalize(v):
-#        return str(v) if isinstance(v, Decimal) else v
+#ef chat_llama(request):
+#   respuesta = None
+#   
+#   # Cargar tu archivo inflacion.json
+#   ruta = os.path.join(settings.BASE_DIR, "economia", "inflacion.json")
 #
-#    for clave, valor in contenido.items():
-#        if isinstance(valor, list):
-#            p.drawString(50, y, f"{clave.capitalize()}:")
-#            y -= 15
-#            for item in valor:
-#                for subk, subv in item.items():
-#                    p.drawString(70, y, f"- {subk}: {normalize(subv)}")
-#                    y -= 12
-#                y -= 5
-#        else:
-#            p.drawString(50, y, f"{clave.capitalize()}: {normalize(valor)}")
-#            y -= 15
+#   with open(ruta, "r") as f:
+#       datos = json.load(f)
 #
-#        if y < 80:
-#            p.showPage()
-#            y = height - 50
-#            p.setFont("Helvetica", 9)
+#   contexto = f"Estos son los datos de inflación:\n{datos}\n"
 #
-#    p.save()
-#    return response
+#   if request.method == "POST":
+#       pregunta = request.POST.get("pregunta")
+#
+#       payload = {
+#            "model": "llama3:8b",
+#            "prompt": contexto + "\nPregunta: " + pregunta,
+#            "stream": False
+#        }
+#
+#       r = requests.post("http://localhost:11434/api/generate", json=payload)
+#       data = r.json()
+#       respuesta = data.get("response", "")
+#
+#   return render(request, "economia/chat.html", {"respuesta": respuesta})
+
+
+            
+
+import os
+import json
+import requests
+from django.shortcuts import render
+from django.conf import settings
+from economia.models import Ingreso, Gasto, MetaAhorro
+
+# =======================
+# CARGAR JSON UNA VEZ
+# =======================
+RUTA_JSON = os.path.join(settings.BASE_DIR, "economia", "inflacion.json")
+
+with open(RUTA_JSON, "r", encoding="utf-8") as f:
+    DATA_ECONOMICA = json.load(f)
+
+
+# =======================
+# SERIALIZAR DECIMALS → STR
+# =======================
+def serializar(lista):
+    return json.loads(json.dumps(lista, default=str))
+
+
+# =======================
+# OBTENER DATOS DEL USUARIO
+# =======================
+def obtener_contexto_usuario(usuario):
+    ingresos = list(
+        Ingreso.objects.filter(usuario=usuario)
+        .values("monto", "fuente__nombre", "fecha", "descripcion")
+    )
+
+    gastos = list(
+        Gasto.objects.filter(usuario=usuario)
+        .values("monto", "categoria__nombre", "fecha", "descripcion")
+    )
+
+    metas = list(
+        MetaAhorro.objects.filter(usuario=usuario)
+        .values("nombre_meta", "monto_objetivo", "monto_actual", "estado", "fecha_limite")
+    )
+
+    return {
+        "ingresos": serializar(ingresos),
+        "gastos": serializar(gastos),
+        "metas": serializar(metas),
+    }
+
+
+# =======================
+#        CHAT LLAMA
+# =======================
+def chat_llama(request):
+    respuesta_texto = None
+
+    if request.method == "POST":
+        pregunta = request.POST.get("pregunta", "")
+
+        # Datos JSON generales
+        contexto_economico = json.dumps(DATA_ECONOMICA, ensure_ascii=False)
+
+        # Datos del usuario autenticado
+        datos_usuario = obtener_contexto_usuario(request.user)
+        contexto_usuario = json.dumps(datos_usuario, ensure_ascii=False)
+
+        # === API GROQ ===
+        url = "https://api.groq.com/openai/v1/chat/completions"
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {settings.GROQ_API_KEY}"
+        }
+
+        payload = {
+            "model": "llama-3.1-8b-instant",
+            "max_tokens": 150,      # 150 tokens → respuesta corta
+            "temperature": 0.2,     # más directo, menos texto
+            "messages": [
+                {
+                    "role": "system",
+                    "content": (
+                        "Eres un asistente financiero personal. "
+                        "Reglas obligatorias:\n"
+                        "1) Siempre usa la moneda boliviana 'Bs.' de forma explícita.\n"
+                        "2) PROHIBIDO usar símbolos como $, USD, dólares o cualquier otra moneda.\n"
+                        "3) Si el usuario no menciona la moneda, asume siempre Bs.\n"
+                        "4) Responde siempre en un máximo de 5 líneas.\n"
+                        "5) Sé directo, corto y preciso."
+                    )
+                },
+                {
+                    "role": "assistant",
+                    "content": (
+                        "Datos económicos globales:\n" +
+                        contexto_economico[:2000] +
+                        "\n\nDatos del usuario:\n" +
+                        contexto_usuario[:2000]
+                    )
+                },
+                {
+                    "role": "user",
+                    "content": pregunta
+                }
+            ]
+        }
+
+        try:
+            r = requests.post(url, headers=headers, json=payload)
+            data = r.json()
+
+            print("DEBUG:", data)
+
+            if "choices" in data:
+                respuesta_texto = data["choices"][0]["message"]["content"]
+            else:
+                respuesta_texto = f"Error en API: {data}"
+
+        except Exception as e:
+            respuesta_texto = f"Error inesperado: {e}"
+
+    return render(request, "economia/chat.html", {"respuesta": respuesta_texto})
+
+
+

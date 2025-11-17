@@ -1,0 +1,51 @@
+{% extends "economia/base.html" %}
+{% load static %}
+
+{% block title %}Asistente Llama3 Local{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+
+    <h2 class="mb-4 text-center">🤖 Asistente Virtual</h2>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            <form method="POST">
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <label class="form-label">Tu pregunta:</label>
+                    <textarea 
+                        name="pregunta" 
+                        rows="4" 
+                        class="form-control" 
+                        placeholder="Escribe tu pregunta aquí..."
+                        required></textarea>
+                </div>
+
+                <div class="text-end">
+                    <button type="submit" class="btn btn-primary">
+                        Enviar
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    {% if respuesta %}
+    <div class="card shadow-sm mt-4">
+        <div class="card-header bg-success text-white">
+            Respuesta del modelo
+        </div>
+        <div class="card-body">
+            <pre style="white-space: pre-wrap; font-size: 1rem;">{{ respuesta }}</pre>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+
+{% endblock %}

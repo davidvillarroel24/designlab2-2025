@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 
+
 <body class="d-flex flex-column min-vh-100">
 
     <!-- 🔹 NAVBAR -->
@@ -99,5 +100,40 @@
 
     <!-- JS de Bootstrap -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- BOTÓN FLOTANTE DEL CHAT -->
+    <a href="{% url 'chat_llama' %}" 
+    id="chatbot-button" 
+    title="Abrir chat con asistente">
+        🤖
+    </a>
+
+    <style>
+    #chatbot-button {
+        position: fixed;
+        bottom: 25px;
+        right: 25px;
+        background: #4f46e5; /* Morado elegante */
+        color: white;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        font-size: 32px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-decoration: none;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        z-index: 9999;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    #chatbot-button:hover {
+        transform: scale(1.15);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+        background: #4338ca;
+    }
+    </style>
+
 </body>
 </html>

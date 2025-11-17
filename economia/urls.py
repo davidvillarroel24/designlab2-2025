@@ -3,7 +3,7 @@ from .views import IngresoCreateView, IngresoUpdateView,dashboard,registrar_usua
 from .views import GastoListView, GastoCreateView, GastoUpdateView, GastoDeleteView
 from .views import IngresoListView, IngresoDeleteView,CategoriaListView,CategoriaUpdateView,CategoriaDeleteView
 from .views import MetaAhorroListView,MetaAhorroCreateView,MetaAhorroUpdateView,MetaAhorroDeleteView
-from .views import reporte_generar,reportes_lista,ReporteEliminarView,reporte_pdf
+from .views import reporte_generar,reportes_lista,ReporteEliminarView,reporte_pdf,chat_llama
 urlpatterns = [     
     
     path('ingresos/nuevo/', IngresoCreateView.as_view(), name='ingreso_nuevo'),
@@ -28,6 +28,7 @@ urlpatterns = [
     path('reportes/', reportes_lista, name='reportes_lista'),
     path('reportes/eliminar/<int:pk>/', ReporteEliminarView.as_view(), name='reporte_eliminar'),
     path('reportes/pdf/<int:reporte_id>/', reporte_pdf, name='reporte_pdf'),
+    path("chat/", chat_llama, name="chat_llama"),
 
 
 ]
