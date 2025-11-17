@@ -222,7 +222,7 @@ def registrar_usuario(request):
             usuario = form.save()
             login(request, usuario)  # inicia sesión automáticamente tras registrarse
             messages.success(request, 'Tu cuenta ha sido creada exitosamente.')
-            return redirect('ingreso_nuevo')  # cambia 'inicio' por la vista a la que quieras redirigir
+            return redirect('dashboard')  # cambia 'inicio' por la vista a la que quieras redirigir
     else:
         form = UsuarioRegistroForm()
     
@@ -240,11 +240,12 @@ class CategoriaCreateView(CreateView):
     model = Categoria
     form_class = CategoriaForm
     template_name = 'economia/categorias_form.html'
-    success_url = reverse_lazy('dashboard')
+    success_url = reverse_lazy('categoria_nueva')
 
     def form_valid(self, form):
         # Asigna automáticamente el usuario autenticado
         form.instance.usuario = self.request.user
+        messages.success(self.request, "Categoria registrada correctamente 🎉")
         return super().form_valid(form)
     
 class CategoriaListView(LoginRequiredMixin, ListView):
